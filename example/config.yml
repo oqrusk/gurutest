@@ -1,0 +1,30 @@
+in:
+  type: file
+  path_prefix: /Users/devlop/github/embulk-filter-lonlat/example/test.csv
+  parser:
+    charset: UTF-8
+    newline: CRLF
+    type: csv
+    delimiter: ','
+    quote: '"'
+    escape: '"'
+    trim_if_not_quoted: false
+    skip_header_lines: 1
+    columns:
+    - {name: status, type: string}
+    - {name: address, type: string}
+    - {name: lat, type: double}
+    - {name: lon, type: double}
+filters:
+  - type: column
+    drop_columns:
+      - {name: status}
+  - type: reverse_geocoding
+    target_lon: lon
+    target_lat: lat
+    level: 5
+    output_columns:
+      - {name: pref, type: string, out: pref}
+      - {name: city, type: string, out: city}
+      - {name: hash, type: string, out: hash}
+out: {type: stdout}
